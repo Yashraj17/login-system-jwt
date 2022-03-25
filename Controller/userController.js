@@ -127,7 +127,7 @@ class userController{
                 if (user) {
                     const secret = user._id + process.env.JWT_SECRET_KEY
                     const token = jwt.sign({userId:user._id},secret,{expiresIn:'5d'});
-                    const link = `http://127.0.0.1:8081/user/reset/${user._id}/${token}`
+                    const link = `https://login-system-jwt.herokuapp.com/user/reset/${user._id}/${token}`
 
                     var mailOptions = {
                         from:process.env.EMAIL_FROM,
