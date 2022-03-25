@@ -2,6 +2,7 @@ const userModel = require('../Model/userModel')
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken');
+const { body, validationResult } = require('express-validator');
 const  transporter  = require('../DataBase/emailConfig');
 
 class userController{
@@ -10,10 +11,17 @@ class userController{
     res.render('signup',{ csrfToken: req.csrfToken() })
     }
     static SignupUser = async (req,res)=>{
-        const {username,email,password,confirm_password} = req.body
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          req.flash("danger","something went wrong")
+          res.redirect("/signup");
+        }
+        else{
+            const {username,email,password,confirm_password} = req.body
         const user = await userModel.findOne({email:email})
         if (user!=null) {
-            res.send({'status':'faild','message':'Email already exits'})
+            req.flash("danger",'Email already exits')
+            res.redirect('/signup')
         } else {
             if (username && email && password && confirm_password ) {
                 if (password === confirm_password) {
@@ -30,17 +38,22 @@ class userController{
                         const token = jwt.sign({userId:saved_user._id},process.env.JWT_SECRET_KEY,{expiresIn:'5d'});
                         // console.log(token);
                         res.cookie('jwt',token)
-                        res.redirect('/')
+                        req.flash("success",'Signup Successfully !! Now Login')
+                        res.redirect('/signup')
                     } catch (error) {
                         res.send(error.message)
                     }
                 } else {
-                    res.send({'status':'faild','message':'Password and Confirm Password is not same'})
+                    req.flash("danger",'Password and Confirm Password is not same')
+                    res.redirect('/signup')
                 }
             } else {
-                res.send({'status':'faild','message':'All field requird'})
+                req.flash("danger",'All field requird')
+                    res.redirect('/signup')
             }
         }
+        }
+        
     }
         //login view function
         static LoginPage = (req,res)=>{
@@ -48,6 +61,12 @@ class userController{
         }
         static LoginUser = async (req,res)=>{
             try {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                  req.flash("danger","Invalid Credential")
+                  res.redirect("/");
+                }
+                else{
                 const {email,password} = req.body;
                 if (email && password) {
                     const user = await userModel.findOne({email:email})
@@ -75,6 +94,7 @@ class userController{
                     res.redirect('/')
                     // res.send({'status':'faild','message':'All field requird'})
                 }
+            }
             } catch (error) {
                 
             }
@@ -121,13 +141,21 @@ class userController{
         }
         //reset verify email
         static verifyEmail = async (req,res)=>{
-            const {email}= req.body;
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+              req.flash("danger","Invalid Credential")
+              res.redirect("/forgetpassword");
+            }
+            else{
+                const {email}= req.body;
             if (email) {
                 const user = await userModel.findOne({email:email})
                 if (user) {
                     const secret = user._id + process.env.JWT_SECRET_KEY
                     const token = jwt.sign({userId:user._id},secret,{expiresIn:'5d'});
-                    const link = `http://login-system-jwt.herokuapp.com/user/reset/${user._id}/${token}`
+                    // https://login-system-jwt.herokuapp.com/
+                    // http://127.0.0.1:8081
+                    const link = `https://login-system-jwt.herokuapp.com/user/reset/${user._id}/${token}`
 
                     var mailOptions = {
                         from:process.env.EMAIL_FROM,
@@ -157,6 +185,8 @@ class userController{
             } else {
                 res.send({'status':'faild','message':'field requird'})
             }
+            }
+            
         }
 
 
