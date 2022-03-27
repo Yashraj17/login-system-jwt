@@ -8,7 +8,7 @@ var checkUserAuth = async (req,res,next)=>{
             const verifyUser = jwt.verify(token,process.env.JWT_SECRET_KEY);
             const data = await userModel.findById(verifyUser.userId).select('-password')
             if (data!=null) {
-                console.log(data);
+                // console.log(data);
                 req.user = data
             next()
             } else {

@@ -6,6 +6,7 @@ const userController = require('../Controller/userController');
 const checkUserAuth = require('../Middleware/auth');
 
 const { check, validationResult } = require('express-validator');
+const studentController = require('../Controller/studentController');
 
 
 var csrfProtection = csrf({ cookie: true });
@@ -33,8 +34,7 @@ router.post('/',
 
 //logout route
 router.get('/logout',checkUserAuth,userController.Logout)
-//home route
-router.get('/home',checkUserAuth,userController.homePage)
+
 
 
 //change password page
@@ -54,5 +54,17 @@ router.get('/user/reset/:id/:token',userController.forgetPassWordPage)
 
 //reset password
 router.post('/user/reset/:id/:token',userController.resetPassword)
+
+////////////////********************************/*/
+// home routes
+//home page
+router.get('/home',checkUserAuth,studentController.homePage)
+
+//insert student
+router.post('/home',checkUserAuth,studentController.InsertStudent)
+
+router.get('/present/:std_id',checkUserAuth,studentController.presentStudent)
+router.get('/absent/:std_id',checkUserAuth,studentController.absentStudent)
+router.get('/checkrecord',checkUserAuth,studentController.checkRecord)
 
 module.exports = router

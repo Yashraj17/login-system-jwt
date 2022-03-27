@@ -131,9 +131,7 @@ class userController{
         }
 
 
-        static homePage = (req,res) =>{
-            res.render('home',{name:req.user})
-        }
+
      
         //view verify email page
         static verifyEmailPage = (req,res) =>{
@@ -219,6 +217,47 @@ class userController{
             } catch (error){
             }
         }
+
+        // static signup = async (req,res) =>{
+        //     const errors = validationResult(req);
+        //     if (!errors.isEmpty()) {
+        //       req.flash("danger","something went wrong")
+        //       res.redirect("/signup");
+        //     }
+        //     else{
+        //         const {username,email,} = req.body
+        //         const user = await userModel.findOne({email:email})
+        //         if (user!=null) {
+        //             req.flash("danger",'Email already exits')
+        //             res.redirect('/signup')
+        //         } else {
+        //             if (username && email ) {
+        //                     try {
+        //                         const data = new userModel({
+        //                             username :username,
+        //                             email:email,
+        //                         })
+        //                         await data.save();
+        //                         const saved_user = await userModel.findOne({email:email});
+        //                         //generate jwt token
+        //                         const token = jwt.sign({userId:saved_user._id},process.env.JWT_SECRET_KEY,{expiresIn:'5d'});
+        //                         const secret = user._id + process.env.JWT_SECRET_KEY
+
+
+        //                         res.cookie('jwt',token)
+        //                         req.flash("success",'Signup Successfully !! Now Login')
+        //                         res.redirect('/signup')
+        //                     } catch (error) {
+        //                         res.send(error.message)
+        //                     }
+        //             } else {
+        //                 req.flash("danger",'All field requird')
+        //                     res.redirect('/signup')
+        //                 }
+        //         }
+
+        //     }
+        // }
 
 }
 module.exports = userController

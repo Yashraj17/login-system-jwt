@@ -24,5 +24,79 @@ html(lang="en")
             if (messages.success)
                 .alert.alert-success.text-center
                     span= messages.success
-            .col.text-center.mt-5
-                h5 this is home page 
+            if (messages.danger)
+                .alert.alert-danger.text-center
+                    span= messages.danger
+            .col-lg-9.mx-auto
+                .row.mt-3
+                    .card.border-0 
+                        .col
+                            h4.text-center Add Student
+                            a(href="/checkrecord").btn.btn-warning.btn-sm.float-end.text-white Check Record 
+                        .card-body 
+                            form(action="", method="post") 
+                                .row.mb-3 
+                                    .col
+                                        input(type="text", name="studentName",placeholder="Student Name").form-control
+                                    .col
+                                        input(type="number", name="rollNo",placeholder="Student Roll").form-control
+                                .row.mb-3 
+                                    .col
+                                        select.form-select(name="course")
+                                            option(selected) Course
+                                            option(value='BCA') BCA 
+                                            option(value='MCA') MCA
+                                            option(value='Btech') Btech
+                                            option(value='MBA') MBA
+                                    .col
+                                        select.form-select(name="semester")
+                                            option(selected) Semester
+                                            option(value='1st') 1st
+                                            option(value='2nd') 2nd
+                                            option(value='3rd') 3rd
+                                            option(value='4th') 4th
+                                            option(value='5th') 5th
+                                            option(value='6th') 6th
+                                    .col
+                                        select.form-select(name="branch")
+                                            option(selected) Branch
+                                            option(value='EC') EC
+                                            option(value='CS') CS
+                                            option(value='Mechinal') Mechinal
+                                            option(value='Diploma') Diploma
+                                            option(value='Other') Other
+                                .row.justify-content-center 
+                                    .col-4
+                                        input(type="submit", value="Add Student").btn.btn-success.w-100.
+        .row 
+            .col-9.mx-auto 
+                .card 
+                    h4.mt-4.text-center Mark Attendance #{date}
+                    .card-body 
+                        table.table.table-striped.table-hover
+                            tr 
+                                th S.No
+                                th Name
+                                th Roll No.
+                                th Course
+                                th Semester
+                                th Branch
+                                th Attendance
+                                -var count = 0
+                            each val in result
+                                -count ++
+                                tr 
+                                    td= count
+                                    td= val.studentName
+                                    td= val.rollNo
+                                    td= val.course
+                                    td= val.semester
+                                    td= val.branch
+                                    td
+                                        if val.status == 0
+                                            a(href=`/present/${val._id}`).btn.btn-success.btn-sm.fw-bold.me-4 P
+                                            a(href=`/absent/${val._id}`).btn.btn-danger.btn-sm.fw-bold A 
+                                        else if val.status == 1
+                                             a.btn.btn-sm.btn-success.disabled.fw-bolder Present
+                                        else if val.status == -1
+                                             a.btn.btn-sm.btn-danger.disabled.fw-bolder Absent
