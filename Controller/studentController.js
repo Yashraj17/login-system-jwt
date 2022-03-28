@@ -1,4 +1,4 @@
-const { countDocuments } = require("../Model/attendanceModel");
+
 const attendanceModel = require("../Model/attendanceModel");
 const studentModel = require("../Model/studentModel")
 
@@ -43,12 +43,12 @@ class studentController{
 
     static InsertStudent= async (req,res)=>{
         const user_id = req.user._id;
-        const {studentName,rollNo,course,branch,semester} =req.body
+        const {studentName,course,branch,semester,reader_id} =req.body
         const student = await studentModel.findOne({
             studentName:studentName,
-            rollNo:rollNo,
             course:course,
             branch:branch,
+            reader_id:reader_id,
             semester:semester
         })
         console.log(student);
@@ -57,13 +57,13 @@ class studentController{
             res.redirect('/home')
            
         } else {
-                   if (studentName && rollNo && course && branch && semester) {
+                   if (studentName && course && branch && semester) {
             const data = new studentModel({
                 teacher_id:user_id,
                 studentName:studentName,
-                rollNo:rollNo,
                 course:course,
                 branch:branch,
+                reader_id:reader_id,
                 semester:semester
             })
             await data.save();
@@ -77,6 +77,9 @@ class studentController{
         }
         
     }
+
+    // static presentStudent = async (req,res,std_id=null)
+
     static presentStudent = async (req,res)=>{
         const user_id = req.user._id;
         const today = new Date();
@@ -85,6 +88,12 @@ class studentController{
         var dd = today.getDate();
         const currentDate = dd +'-'+ mm +'-'+ yyyy
 
+        // if(std_id == null){
+        //     const student_id = req.params.std_id;
+        // }   
+        // else {
+        //     var student_id = std_id;
+        // }
         const student_id = req.params.std_id;
         var data = await attendanceModel.findOne({date:currentDate,teacher_id:user_id})
         if (data === null) {
@@ -165,6 +174,54 @@ class studentController{
             })
         }
    
+    }
+
+    static addStudent = (req,res)=>{
+        res.render('attendanceByRf');
+    }
+
+    static Rf_reader =async (req,res)=>{
+
+        const user_id = req.user._id;
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        var mm = today.getMonth() + 1; 
+        var dd = today.getDate();
+        const currentDate = dd +'-'+ mm +'-'+ yyyy
+
+
+        const student  = await studentModel.findOne({reader_id:req.body.rf_id})
+
+        const student_id = student._id;
+
+        // this.presentStudent(req,res,student_id);
+
+
+        var data = await attendanceModel.findOne({date:currentDate,teacher_id:user_id})
+        if (data === null) {
+            var data = new attendanceModel({
+                date:currentDate,
+                attendance:[
+                    {
+                        student_id:student_id,
+                        status:'P'
+                    }
+                ],
+                teacher_id:req.user._id
+            })
+            await data.save();
+            await studentModel.findByIdAndUpdate(student_id,{status:1})
+            res.redirect('/home')
+        } else {
+            data.attendance.push({
+                student_id:student_id,
+                status:'P'
+            })
+            await data.save();
+            await studentModel.findByIdAndUpdate(student_id,{status:1})
+            res.redirect('/home')
+        }
+        
     }
 }
 

@@ -60,11 +60,16 @@ router.post('/user/reset/:id/:token',userController.resetPassword)
 //home page
 router.get('/home',checkUserAuth,studentController.homePage)
 
-//insert student
-router.post('/home',checkUserAuth,studentController.InsertStudent)
+
 
 router.get('/present/:std_id',checkUserAuth,studentController.presentStudent)
+router.post('/Rf_reader/',checkUserAuth,studentController.Rf_reader)
 router.get('/absent/:std_id',checkUserAuth,studentController.absentStudent)
 router.get('/checkrecord',checkUserAuth,studentController.checkRecord)
+
+router.get('/addstudent',studentController.addStudent)
+
+//insert student
+router.post('/addstudent',checkUserAuth,studentController.InsertStudent)
 
 module.exports = router
