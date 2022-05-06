@@ -21,7 +21,7 @@ html(lang="en")
                         a.navbar-link(href="/addstudent").btn.btn-waring.me-2 Add Student 
                     li.nav-item 
                         a.navbar-link(href="/logout").btn.btn-waring.me-2 Logout  
-    .container.container-sm-fluid 
+    .container
         .row 
                 .col-3.mx-auto
                     .card-body 
@@ -35,33 +35,34 @@ html(lang="en")
         .row 
             .col-sm-12.col-lg-9.mx-auto 
                 .row
-                    .col
+                    .col-sm-6.col-lg-12
                         a(href="/checkrecord").btn.btn-warning.btn-sm.float-end.mb-3.text-white Check Record 
-                .card 
-                    h4.mt-4.text-center Mark Attendance #{date}
-                    .card-body 
-                        table.table.table-striped.table-hover
-                            tr 
-                                th S.No
-                                th Name
-                                th Course
-                                th Semester
-                                th Branch
-                                th Attendance
-                                -var count = 0
-                            each val in result
-                                -count ++
+                .col-sm-12
+                    .card 
+                        h4.mt-4.text-center Mark Attendance #{date}
+                        .card-body 
+                            table.table.table-striped.table-hover
                                 tr 
-                                    td= count
-                                    td= val.studentName
-                                    td= val.course
-                                    td= val.semester
-                                    td= val.branch
-                                    td
-                                        if val.status == 0
-                                            a(href=`/present/${val._id}`).btn.btn-success.btn-sm.fw-bold.me-4 P
-                                            a(href=`/absent/${val._id}`).btn.btn-danger.btn-sm.fw-bold A 
-                                        else if val.status == 1
-                                             a.btn.btn-sm.btn-success.disabled.fw-bolder Present
-                                        else if val.status == -1
-                                             a.btn.btn-sm.btn-danger.disabled.fw-bolder Absent
+                                    th S.No
+                                    th Name
+                                    th Course
+                                    th Semester
+                                    th Branch
+                                    th Attendance
+                                    -var count = 0
+                                each val in result
+                                    -count ++
+                                    tr 
+                                        td= count
+                                        td= val.studentName
+                                        td= val.course
+                                        td= val.semester
+                                        td= val.branch
+                                        td
+                                            if val.status == 0
+                                                a(href=`/present/${val._id}`).btn.btn-success.btn-sm.fw-bold.me-4 P
+                                                a(href=`/absent/${val._id}`).btn.btn-danger.btn-sm.fw-bold A 
+                                            else if val.status == 1
+                                                a.btn.btn-sm.btn-success.disabled.fw-bolder Present
+                                            else if val.status == -1
+                                                a.btn.btn-sm.btn-danger.disabled.fw-bolder Absent

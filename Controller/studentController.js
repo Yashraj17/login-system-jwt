@@ -45,11 +45,7 @@ class studentController{
         const user_id = req.user._id;
         const {studentName,course,branch,semester,reader_id} =req.body
         const student = await studentModel.findOne({
-            studentName:studentName,
-            course:course,
-            branch:branch,
             reader_id:reader_id,
-            semester:semester
         })
         console.log(student);
         if (student !== null) {
@@ -190,15 +186,18 @@ class studentController{
         const currentDate = dd +'-'+ mm +'-'+ yyyy
 
 
-        const student  = await studentModel.findOne({reader_id:req.body.rf_id})
+        const student  = await studentModel.findOne({teacher_id:user_id,
+            reader_id:req.body.rf_id})
 
         const student_id = student._id;
-
+       console.log(student_id);
         // this.presentStudent(req,res,student_id);
 
 
         var data = await attendanceModel.findOne({date:currentDate,teacher_id:user_id})
+        console.log('this is data of all student',data);
         if (data === null) {
+            console.log('helllo world nullllllllllllllllllllll');
             var data = new attendanceModel({
                 date:currentDate,
                 attendance:[
@@ -213,11 +212,14 @@ class studentController{
             await studentModel.findByIdAndUpdate(student_id,{status:1})
             res.redirect('/home')
         } else {
-            data.attendance.push({
-                student_id:student_id,
-                status:'P'
-            })
-            await data.save();
+            // var data = await attendanceModel.findOneAndUpdate({date:currentDate,teacher_id:user_id},$set:[])
+            // await studentAttendanceModel.updateOne({"date" : currentDate ,"teacher_id":user_id, "attendance.student_id":student_id}, { $set: { "attendance.$.status" : "P" } })
+            console.log('helllo world is me');
+            // data.attendance.push({
+            //     student_id:student_id,
+            //     status:'P'
+            // })
+            // await data.save();
             await studentModel.findByIdAndUpdate(student_id,{status:1})
             res.redirect('/home')
         }
