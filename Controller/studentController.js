@@ -215,11 +215,11 @@ class studentController{
             // var data = await attendanceModel.findOneAndUpdate({date:currentDate,teacher_id:user_id},$set:[])
             // await studentAttendanceModel.updateOne({"date" : currentDate ,"teacher_id":user_id, "attendance.student_id":student_id}, { $set: { "attendance.$.status" : "P" } })
             console.log('helllo world is me');
-            // data.attendance.push({
-            //     student_id:student_id,
-            //     status:'P'
-            // })
-            // await data.save();
+            data.attendance.push({
+                student_id:student_id,
+                status:'P'
+            })
+            await data.save();
             await studentModel.findByIdAndUpdate(student_id,{status:1})
             res.redirect('/home')
         }
